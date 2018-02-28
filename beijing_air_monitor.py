@@ -16,7 +16,7 @@ LEVEL_UNHEALTHY_FOR_SENSITIVE_GROUPS = "Unhealthy for Sensitive Groups"
 LEVEL_UNHEALTHY = "Unhealthy"
 LEVEL_VERY_UNHEALTHY = "Very Unhealthy"
 LEVEL_HAZARDOUS = "Hazardous"
-LEVEL_BEYOND_INDEX  = "Beyond Index"
+LEVEL_BEYOND_INDEX = "Beyond Index"
 
 
 def get_aqi_data():
@@ -24,7 +24,6 @@ def get_aqi_data():
     url = "{}{}".format(AQICN_BASE_URL, CITY_FEED.format(city, AQICN_TOKEN))
     response = requests.get(url=url)
     data = json.loads(response.text)
-    print(data)
     if 'status' not in data:
         raise ValueError("no status in city feed response json")
     if 'data' not in data:
@@ -82,22 +81,18 @@ if '__name__==__main__':
         print(e)
 
     bot = telegram.Bot(BOT_API)
-    if isDebug:
-        commit_token = TESTER_ID
-    else:
-        commit_token = CHANNEL_ID
-    # bot.send_message(commit_token, "test")
-    print(bot.get_me())
 
-    print(get_aqi_data())
-
-    # while 1:
-    #     try:
-    #         get_data()
-    #     except Exception as ex:
-    #         print(ex)
-    #     if isDebug:
-    #         sleep_duration = 5
-    #     else:
-    #         sleep_duration = 3600 + random.randint(-300, 300) # 1h ± 5min
-    #     time.sleep(sleep_duration)
+    while 1:
+        try:
+            if isDebug:
+                commit_token = TESTER_ID
+            else:
+                commit_token = CHANNEL_ID
+            bot.send_message(commit_token, get_aqi_data())
+        except Exception as ex:
+            print(ex)
+        if isDebug:
+            sleep_duration = 300
+        else:
+            sleep_duration = 3600
+        time.sleep(sleep_duration)
