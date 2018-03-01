@@ -9,6 +9,9 @@ from aqi_data import AqiData
 AQICN_BASE_URL = "https://api.waqi.info"
 CITY_FEED = "/feed/{}/?token={}"
 
+SHORT_SLEEP_DURATION = 300
+LONG_SLEEP_DURATION = 2400
+
 
 def get_aqi_data():
     url = "{}{}".format(AQICN_BASE_URL, CITY_FEED.format(CITY, AQICN_TOKEN))
@@ -77,10 +80,16 @@ if '__name__==__main__':
                                                               aqi_data.level)
                 bot.send_message(commit_token, message)
                 lastUpdateTime = aqi_data.time
+                if isDebug:
+                    sleep_duration = 60
+                else:
+                    sleep_duration = LONG_SLEEP_DURATION
+                time.sleep(sleep_duration)
+            else:
+                if isDebug:
+                    sleep_duration = 60
+                else:
+                    sleep_duration = SHORT_SLEEP_DURATION
+                time.sleep(sleep_duration)
         except Exception as ex:
             print(ex)
-        if isDebug:
-            sleep_duration = 60
-        else:
-            sleep_duration = 3600
-        time.sleep(sleep_duration)
