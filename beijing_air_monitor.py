@@ -76,6 +76,7 @@ if '__name__==__main__':
                 message = "{}; AQI: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.aqi, aqi_data.pm25,
                                                               aqi_data.level)
                 bot.send_message(commit_token, message)
+                lastUpdateTime = aqi_data.time
         except Exception as ex:
             print(ex)
         if isDebug:
