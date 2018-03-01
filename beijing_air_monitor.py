@@ -1,9 +1,7 @@
 # coding:utf-8
 
 import requests
-import re
 import time
-import random
 import json
 import telegram
 

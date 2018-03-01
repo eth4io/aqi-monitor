@@ -27,6 +27,8 @@ For obtaining `channel_id`, check [here](https://stackoverflow.com/questions/338
 ```
 git clone git@github.com:Eth4nZ/aqi-monitor.git && cd aqi-monitor
 
+pip3 install -r requirements.txt
+
 cp sample_config.json config.json
 ```
 complete `config.json` with the tokens you got in the previous section.
