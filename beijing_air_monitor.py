@@ -4,17 +4,10 @@ import requests
 import time
 import json
 import telegram
+from aqi_data import AqiData
 
 AQICN_BASE_URL = "https://api.waqi.info"
 CITY_FEED = "/feed/{}/?token={}"
-
-LEVEL_GOOD = "Good"
-LEVEL_MODERATE = "Moderate"
-LEVEL_UNHEALTHY_FOR_SENSITIVE_GROUPS = "Unhealthy for Sensitive Groups"
-LEVEL_UNHEALTHY = "Unhealthy"
-LEVEL_VERY_UNHEALTHY = "Very Unhealthy"
-LEVEL_HAZARDOUS = "Hazardous"
-LEVEL_BEYOND_INDEX = "Beyond Index"
 
 
 def get_aqi_data():
@@ -41,21 +34,9 @@ def get_aqi_data():
         raise ValueError("no v.pm25 in city feed response json")
     pm25 = data['data']['iaqi']['pm25']['v']
 
-    if aqi <= 50 & aqi > 0:
-        level = LEVEL_GOOD
-    elif aqi <= 100:
-        level = LEVEL_MODERATE
-    elif aqi <= 150:
-        level = LEVEL_UNHEALTHY_FOR_SENSITIVE_GROUPS
-    elif aqi <= 200:
-        level = LEVEL_UNHEALTHY
-    elif aqi <= 300:
-        level = LEVEL_HAZARDOUS
-    else:
-        level = LEVEL_BEYOND_INDEX
+    aqi_data = AqiData(time, aqi, pm25)
 
-    str = "{}; AQI: {}; PM2.5: {}; {}".format(time, aqi, pm25, level)
-    return str
+    return aqi_data
 
 
 if '__name__==__main__':
@@ -65,6 +46,7 @@ if '__name__==__main__':
     global TESTER_ID
     global CHANNEL_ID
     global CITY
+    global lastUpdateTime
     isDebug = False
     try:
         with open('config.json') as config_json:
@@ -76,6 +58,7 @@ if '__name__==__main__':
             TESTER_ID = config["tester_id"]
             CHANNEL_ID = config["channel_id"]
             CITY = config["city"]
+            lastUpdateTime = ""
     except Exception as e:
         print(e)
 
@@ -87,11 +70,16 @@ if '__name__==__main__':
                 commit_token = TESTER_ID
             else:
                 commit_token = CHANNEL_ID
-            bot.send_message(commit_token, get_aqi_data())
+
+            aqi_data = get_aqi_data()
+            if aqi_data.time != lastUpdateTime:
+                message = "{}; AQI: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.aqi, aqi_data.pm25,
+                                                              aqi_data.level)
+                bot.send_message(commit_token, message)
         except Exception as ex:
             print(ex)
         if isDebug:
-            sleep_duration = 300
+            sleep_duration = 60
         else:
             sleep_duration = 3600
         time.sleep(sleep_duration)
