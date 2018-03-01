@@ -20,8 +20,7 @@ LEVEL_BEYOND_INDEX = "Beyond Index"
 
 
 def get_aqi_data():
-    city = "@3303"  # Beijing US Embassy
-    url = "{}{}".format(AQICN_BASE_URL, CITY_FEED.format(city, AQICN_TOKEN))
+    url = "{}{}".format(AQICN_BASE_URL, CITY_FEED.format(CITY, AQICN_TOKEN))
     response = requests.get(url=url)
     data = json.loads(response.text)
     if 'status' not in data:
@@ -67,6 +66,7 @@ if '__name__==__main__':
     global BOT_API
     global TESTER_ID
     global CHANNEL_ID
+    global CITY
     isDebug = False
     try:
         with open('config.json') as config_json:
@@ -77,6 +77,7 @@ if '__name__==__main__':
             BOT_API = config["bot_token"]
             TESTER_ID = config["tester_id"]
             CHANNEL_ID = config["channel_id"]
+            CITY = config["city"]
     except Exception as e:
         print(e)
 
