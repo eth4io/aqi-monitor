@@ -4,6 +4,7 @@ import requests
 import time
 import json
 import telegram
+import datetime
 from aqi_data import AqiData
 
 AQICN_BASE_URL = "https://api.waqi.info"
@@ -75,19 +76,22 @@ if '__name__==__main__':
                 commit_token = CHANNEL_ID
 
             aqi_data = get_aqi_data()
+            timestamp = datetime.datetime.now()
             if aqi_data.time != lastUpdateTime:
                 message = "{}; AQI: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.aqi, aqi_data.pm25,
                                                               aqi_data.level)
+                print(str(timestamp) + " new data: " + message)
                 bot.send_message(commit_token, message)
                 lastUpdateTime = aqi_data.time
                 if isDebug:
-                    sleep_duration = 60
+                    sleep_duration = 5
                 else:
                     sleep_duration = LONG_SLEEP_DURATION
                 time.sleep(sleep_duration)
             else:
+                print(str(timestamp) + " same time as lastUpdateTime: " + aqi_data.time)
                 if isDebug:
-                    sleep_duration = 60
+                    sleep_duration = 5
                 else:
                     sleep_duration = SHORT_SLEEP_DURATION
                 time.sleep(sleep_duration)
