@@ -1,5 +1,9 @@
 # Air quality monitor for your city
 
+## Example
+
+[![Telegram Chat](https://img.shields.io/badge/Telegram_Channel-BeijingAir-blue.svg)](https://t.me/BeijingAir)
+
 ## Getting Started
 
 ### Prerequisites
@@ -46,6 +50,4 @@ Message will be sent to your private account with 5 minutes interval
 `"debug_mode": "false"`
 Message will be sent to telegram channel with 60 minutes interval
 
-## Example
 
-[![Telegram Chat](https://img.shields.io/badge/Channel-Telegram-blue.svg)](https://t.me/BeijingAir)
