@@ -61,7 +61,7 @@ if '__name__==__main__':
             TESTER_ID = config["tester_id"]
             CHANNEL_ID = config["channel_id"]
             CITY = config["city"]
-            lastUpdateTime = ""
+            lastUpdateTime = config["last_update_time"]
     except Exception as e:
         print(e)
 
