@@ -21,6 +21,8 @@ class AqiData(object):
         elif aqi <= 200:
             self.level = LEVEL_UNHEALTHY
         elif aqi <= 300:
+            self.level = LEVEL_VERY_UNHEALTHY
+        elif aqi <= 500:
             self.level = LEVEL_HAZARDOUS
         else:
             self.level = LEVEL_BEYOND_INDEX
