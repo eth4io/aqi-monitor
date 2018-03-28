@@ -32,13 +32,19 @@ def get_aqi_data():
     aqi = data['data']['aqi']
     if 'iaqi' not in data['data']:
         raise ValueError("no iaqi in city feed response json")
-    elif 'pm25' not in data['data']['iaqi']:
+    iaqi = data['data']['iaqi']
+    if 'pm25' not in iaqi:
         raise ValueError("no pm25 in city feed response json")
     elif 'v' not in data['data']['iaqi']['pm25']:
         raise ValueError("no v.pm25 in city feed response json")
-    pm25 = data['data']['iaqi']['pm25']['v']
+    pm25 = iaqi['pm25']['v']
+    if 'pm10' not in iaqi:
+        raise ValueError("no pm10 in city feed response json")
+    elif 'v' not in iaqi['pm10']:
+        raise ValueError("no v.pm10 in city feed response json")
+    pm10 = iaqi['pm10']['v']
 
-    aqi_data = AqiData(time, aqi, pm25)
+    aqi_data = AqiData(time, aqi, pm25, pm10)
 
     return aqi_data
 
@@ -78,7 +84,7 @@ if '__name__==__main__':
             aqi_data = get_aqi_data()
             timestamp = datetime.datetime.now()
             if aqi_data.time != lastUpdateTime:
-                message = "{}; AQI: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.aqi, aqi_data.pm25,
+                message = "{}; PM10: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.pm10, aqi_data.pm25,
                                                               aqi_data.level)
                 print(str(timestamp) + " new data: " + message)
                 bot.send_message(commit_token, message)

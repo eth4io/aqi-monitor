@@ -8,9 +8,10 @@ LEVEL_BEYOND_INDEX = "Beyond Index"
 
 
 class AqiData(object):
-    def __init__(self, time, aqi, pm25):
+    def __init__(self, time, aqi, pm25, pm10):
         self.time = time
         self.aqi = aqi
+        self.pm10 = pm10
         self.pm25 = pm25
         if aqi <= 50 & aqi > 0:
             self.level = LEVEL_GOOD
