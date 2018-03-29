@@ -49,14 +49,14 @@ def get_aqi_data():
     return aqi_data
 
 
-if '__name__==__main__':
+def init():
     global isDebug
     global AQICN_TOKEN
     global BOT_API
     global TESTER_ID
     global CHANNEL_ID
     global CITY
-    global lastUpdateTime
+    global CONFIG_LAST_UPDATE_TIME
     isDebug = False
     try:
         with open('config.json') as config_json:
@@ -68,12 +68,14 @@ if '__name__==__main__':
             TESTER_ID = config["tester_id"]
             CHANNEL_ID = config["channel_id"]
             CITY = config["city"]
-            lastUpdateTime = config["last_update_time"]
+            CONFIG_LAST_UPDATE_TIME = config["last_update_time"]
     except Exception as e:
         print(e)
 
-    bot = telegram.Bot(BOT_API)
 
+def start():
+    last_update_time = CONFIG_LAST_UPDATE_TIME
+    bot = telegram.Bot(BOT_API)
     while 1:
         try:
             if isDebug:
@@ -83,19 +85,19 @@ if '__name__==__main__':
 
             aqi_data = get_aqi_data()
             timestamp = datetime.datetime.now()
-            if aqi_data.time != lastUpdateTime:
-                message = "{}; PM10: {}; PM2.5: {}; {}".format(aqi_data.time, aqi_data.pm10, aqi_data.pm25,
+            if aqi_data.time != last_update_time:
+                message = "{}; PM2.5: *{}*; PM10: *{}*; {}".format(aqi_data.time, aqi_data.pm25, aqi_data.pm10,
                                                               aqi_data.level)
                 print(str(timestamp) + " new data: " + message)
-                bot.send_message(commit_token, message)
-                lastUpdateTime = aqi_data.time
+                bot.send_message(chat_id=commit_token, text=message, parse_mode=telegram.ParseMode.MARKDOWN)
+                last_update_time = aqi_data.time
                 if isDebug:
                     sleep_duration = 5
                 else:
                     sleep_duration = LONG_SLEEP_DURATION
                 time.sleep(sleep_duration)
             else:
-                print(str(timestamp) + " same time as lastUpdateTime: " + aqi_data.time)
+                print(str(timestamp) + " same time as last_update_time: " + aqi_data.time)
                 if isDebug:
                     sleep_duration = 5
                 else:
@@ -103,3 +105,9 @@ if '__name__==__main__':
                 time.sleep(sleep_duration)
         except Exception as ex:
             print(ex)
+            time.sleep(SHORT_SLEEP_DURATION)
+
+
+if '__name__==__main__':
+    init()
+    start()
