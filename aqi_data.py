@@ -13,6 +13,8 @@ class AqiData(object):
         self.aqi = aqi
         self.pm10 = pm10
         self.pm25 = pm25
+        if not isinstance(aqi, int):
+            aqi = pm25
         if aqi <= 50 & aqi > 0:
             self.level = LEVEL_GOOD
         elif aqi <= 100:
